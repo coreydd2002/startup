@@ -1,6 +1,4 @@
 # startup
-startup project for byu cs 260
-
 
 Elevator pitch
 As human beings, we all need someone to talk to. We need to express how we are feeling. But sometimes we cant share our feelings 
