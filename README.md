@@ -36,3 +36,7 @@ sending messages
 DB/Login - Store users, and messages in database. Register and login users. Credentials securely stored in database.
 WebSocket - As each user text, their texts are broadcast to only the disired other user.
 
+here is a rough sketch that shows how each user will send messages to specific users
+<img width="947" alt="Screenshot 2024-09-14 204759" src="https://github.com/user-attachments/assets/301d139f-33ba-4376-a2aa-e2d859d1b0d9">
+
+
