@@ -11,6 +11,7 @@ conversation without any consequences! this can help others get weight off of th
 feeling without needing to reveal their true identity. 
 
 design
+
 <img width="592" alt="Screenshot 2024-09-14 201907" src="https://github.com/user-attachments/assets/ca690006-0dc9-4818-82a7-58ad74a61afb">
 
 Key features:
@@ -35,59 +36,3 @@ sending messages
 DB/Login - Store users, and messages in database. Register and login users. Credentials securely stored in database.
 WebSocket - As each user text, their texts are broadcast to only the disired other user.
 
-HTML deliverable
-For this deliverable I built out the structure of my application using HTML.
-
- HTML pages - Two HTML page that represent the ability to login and to send/recieve texts.
- Links - The login page automatically links to the users page.
- Text - every message will have text as well as the different usernames
- DB/Login - text box and submit button for login and generating a new text string. 
- WebSocket - The count of current text strings results represent the number of users that a user is texting.
-
- CSS deliverable
-For this deliverable I properly styled the application into its final appearance.
-
- Header, footer, and main content body
- Navigation elements - I dropped the underlines and changed the color for anchor elements.
- Responsive to window resizing - My app looks great on all window sizes and devices
- Application elements - Used good contrast and whitespace
- Application text content - Consistent fonts and clear contrast from surrounding bubbles
- 
-React deliverable
-For this deliverable I used JavaScript and React so that the application completely works for a single user. I also added placeholders for future technology.
-
- Bundled and transpiled - done!
- Components - Login, text messages, WebSocket.
- login - When you press enter or the login button it takes you to the text page.
- database - Displayed the text string counts. Currently this is stored and retrieved from local storage, but it will be replaced with the database data later.
- WebSocket - I used the randomizer function to randomly select other users to text. This will be replaced with WebSocket messages later.
- application logic - The highlight and ranking number change based up the user's selections.
- Router - Routing between login and texting components.
- Hooks - Vue uses class properties instead of UseState to track changes in texting data.
- 
-Service deliverable
-For this deliverable I added backend endpoints that receives votes and returns the voting totals.
-
- Node.js/Express HTTP service - done!
- Static middleware for frontend - done!
- Backend service endpoints - Placeholders for login that stores the current user on the server. Endpoints for texting.
- Frontend calls service endpoints - I did this using the fetch function.
- 
-DB/Login deliverable
-For this deliverable I associate the votes with the logged in user. I stored the votes in the database.
-
- MongoDB Atlas database created - done!
- Stores data in MongoDB - done!
- User registration - Creates a new account in the database.
- existing user - Stores the votes under the same user if the user already exists.
- Use MongoDB to store credentials - Stores both user and their votes.
- Restricts functionality - You cannot vote until you have logged in. This is restricted on the frontend only. 😔
-WebSocket deliverable
-➡️ The following is an example of the required information for the Startup WebSocket deliverable
-
-For this deliverable I used webSocket to update the votes on the frontend in realtime.
-
- Backend listens for WebSocket connection - done!
- Frontend makes WebSocket connection - done!
- Data sent over WebSocket connection - done!
- WebSocket data displayed - All user votes display in realtime. I'm really proud that this is working. Way cool!
