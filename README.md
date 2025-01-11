@@ -14,24 +14,24 @@ design
 <img width="592" alt="Screenshot 2024-09-14 201907" src="https://github.com/user-attachments/assets/ca690006-0dc9-4818-82a7-58ad74a61afb">
 
 Key features: 
-Secure login over HTTPS 
-ability to pair up with a random user 
-selectible list of all current text srings, 
-can send messages privately between users 
-Total text strings  
-can delete or report other users  
-every text message saved 
-randomly generates a name for other anonomys users 
+-Secure login over HTTPS 
+-ability to pair up with a random user 
+-selectible list of all current text srings, 
+-can send messages privately between users 
+-Total text strings  
+-can delete or report other users  
+-every text message saved 
+-randomly generates a name for other anonomys users 
 
 Technologies: 
 I am going to use the required technologies in the following ways. 
-HTML - Uses correct HTML structure for application. Two HTML pages. One for login and one for texting others.  
-CSS - Application styling that looks good on different screen sizes, uses good whitespace, color choice and contrast. 
+HTML - Uses correct HTML structure to display a login page and a text string page. This will require two HTML pages.
+CSS - Application styling that can be nicely refitted on different screen sizes, uses good whitespace, color choice and contrast. 
 React - Provides login, choice display, sending and recieving texts, display other users texts, and use of React for routing and components. 
 Service - Backend service with endpoints for: 
-login 
-retrieving messages 
-sending messages 
+ -login 
+ -retrieving messages 
+ -sending messages 
 DB/Login - Store users, and messages in database. Register and login users. Credentials securely stored in database. 
 WebSocket - As each user text, their texts are broadcast to only the disired other user. 
   
