@@ -1,6 +1,6 @@
-# startup
+## startup
 
-Elevator pitch:
+#Elevator pitch:
 
 As human beings, we all need someone to talk to. We need to express how we are feeling. But sometimes we cant share our feelings 
 with those who are involved in our lives, becuase it could be relavant to them and could cause further issues. I will create a website 
@@ -9,11 +9,11 @@ complete strangers! This website will anonomously connect you to another user wi
 conversation without any consequences! this can help others get weight off of their chest as they can talk through how they have been 
 feeling without needing to reveal their true identity. 
 
-design
+#design
 
 <img width="592" alt="Screenshot 2024-09-14 201907" src="https://github.com/user-attachments/assets/ca690006-0dc9-4818-82a7-58ad74a61afb">
 
-Key features: 
+#Key features: 
 -Secure login over HTTPS 
 -ability to pair up with a random user 
 -selectible list of all current text srings, 
@@ -23,7 +23,7 @@ Key features:
 -every text message saved 
 -randomly generates a name for other anonomys users 
 
-Technologies: 
+#Technologies: 
 I am going to use the required technologies in the following ways. 
 HTML - Uses correct HTML structure to display a login page and a text string page. This will require two HTML pages.
 CSS - Application styling that can be nicely refitted on different screen sizes, uses good whitespace, color choice and contrast. 
