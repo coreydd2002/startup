@@ -13,7 +13,7 @@ feeling without needing to reveal their true identity.
 
 <img width="592" alt="Screenshot 2024-09-14 201907" src="https://github.com/user-attachments/assets/ca690006-0dc9-4818-82a7-58ad74a61afb">
 
-## Key features: 
+### Key features: 
 -Secure login over HTTPS 
 -ability to pair up with a random user 
 -selectible list of all current text srings, 
