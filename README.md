@@ -1,2 +1,5 @@
-# startup
-startup project for byu cs 260
+# AWS Deliveralbe
+[x] Server deployed and accessible with custom domain name - penpal.click
+
+#HTML deliverable
+[x] HTML pages - 
