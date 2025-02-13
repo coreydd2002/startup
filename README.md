@@ -1,7 +1,7 @@
 # AWS Deliveralbe
 - [x] Server deployed and accessible with custom domain name - penpal.click
 
-#HTML deliverable
+# HTML deliverable
 - [x] HTML pages - I created 3 pages: login, main and about
 - [x] Proper HTML element usage - I used all the tags to outline all sections of my content
 - [x] Links - Every page has links to the other 2 pages in the header
@@ -12,7 +12,7 @@
 - [x] DB data placehoder - The code from simon's data placeholder is still there but hidden
 - [x] WebSocket placeholder - There is a text string where you can actually type.
 
-#CSS delverable
+# CSS delverable
 - [x] Header, footer, and main content body - The header and footer are consistent on all pages. the main content is different across pages. the main page body includes three rows of content
 - [x] Navigation elements - The navigation across pages is included in the header and is spaced out evenly and is consistent across all pages
 - [x] Responsive to window resizing - I used the flex feature to allow the content on the page to respond to the windows resizing
