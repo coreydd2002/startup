@@ -19,3 +19,15 @@
 - [x] Application elements - On the main page, I provided a section with a list of your pals to talk to, the text string section, and an options section. I used fflex to place them in rows sibe by side and to take up the entire window between the header and footer
 - [x] Application text content - I refitted the description in the about page and justified the paragragh. 
 - [x] Application images - I resixed the image to take up more space on the about page
+
+# React part 1 Deliverable
+
+- [x] Port Simon CSS to use React as defined in the Simon React Part 1 instruction.
+- [x] Convert your HTML/CSS startup frontend to use React.
+- [x] Make sure your name is displayed in the application and that there is a link to your GitHub repository.
+- [x] Periodically commit and push your code to GitHub.
+- [x] Periodically update your startup repository's notes.md file to reflect what you have learned and want to remember.
+- [x] Push your final version of your project to GitHub.
+- [x] Deploy your startup application to your production environment (your server).
+- [x] Make sure your application is available from your production environment.
+- [x] Upload the URL to your startup application to the Canvas assignment.
