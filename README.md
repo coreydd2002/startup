@@ -34,20 +34,20 @@
 
 # React part 2 Deliverable
 
-- [] Review and deploy Simon React
+- [ ] Review and deploy Simon React
   - Clone the Simon React repository to your development environment.
   - Execute your frontend code in your development environment by running npm run dev from the console in the root of the project. This will automatically open your browser to
     https://localhost:5173. Use the browser's dev tools to step through the frontend JavaScript using the Source tab.
   - Deploy to your production environment using the deployment script so that it is available with your domain's simon subdomain.
-- [] Implement the JavaScript code using the React framework to make your startup completely functional.
+- [ ] Implement the JavaScript code using the React framework to make your startup completely functional.
   - Use React useState and component properties for the reactive parts of each component.
   - Add React useEffect for component lifecycle events.
   - Add JavaScript to control what gets rendered based upon the current state of the component.
   - Mock out a working solution for any functionality that will be implemented in a later deliverable. For example, use setInterval to simulate WebSocket message, or use LocalStorage for persisting user data.
-- [] Make sure your name is displayed in the application and that there is a link to your GitHub repository.
-- [] Periodically commit and push your code to GitHub.
-- [] Periodically update your startup repository's notes.md file to reflect what you have learned and want to remember.
-- [] Push your final version of your project to GitHub.
-- [] Deploy your startup application to your production environment (your server).
-- [] Make sure your application is available from your production environment.
-- [] Upload the URL to your startup application to the Canvas assignment.
+- [ ] Make sure your name is displayed in the application and that there is a link to your GitHub repository.
+- [ ] Periodically commit and push your code to GitHub.
+- [ ] Periodically update your startup repository's notes.md file to reflect what you have learned and want to remember.
+- [ ] Push your final version of your project to GitHub.
+- [ ] Deploy your startup application to your production environment (your server).
+- [ ] Make sure your application is available from your production environment.
+- [ ] Upload the URL to your startup application to the Canvas assignment.
