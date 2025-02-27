@@ -34,7 +34,7 @@
 
 # React part 2 Deliverable
 
-- [ ] Review and deploy Simon React
+- [x] Review and deploy Simon React
   - Clone the Simon React repository to your development environment.
   - Execute your frontend code in your development environment by running npm run dev from the console in the root of the project. This will automatically open your browser to
     https://localhost:5173. Use the browser's dev tools to step through the frontend JavaScript using the Source tab.
