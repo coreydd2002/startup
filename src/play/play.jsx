@@ -24,17 +24,31 @@ export function Play() {
   }, [messages]);
 
   // Function to send a new message
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (messageInput.trim() === "") return;
-
-    const newMessages = {
-      ...messages,
-      [currentPal]: [...(messages[currentPal] || []), { text: messageInput, sender: "user1" }]
-    };
-
-    setMessages(newMessages);
-    setMessageInput("");
+  
+    const response = await fetch(`/api/messages/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipientEmail: currentPal, // Assume `currentPal` holds recipient email
+        message: messageInput,
+      }),
+    });
+  
+    if (response.ok) {
+      setMessages((prev) => ({
+        ...prev,
+        [currentPal]: [...(prev[currentPal] || []), { text: messageInput, sender: "user1" }],
+      }));
+      setMessageInput("");
+    } else {
+      console.error("Failed to send message");
+    }
   };
+  
 
   // Function to add a new numbered pal
   const addNewPal = () => {

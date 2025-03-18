@@ -1,6 +1,16 @@
 import React from 'react';
+import './about.css';
 
-export function About() {
+export function About(props) {
+  const [imageUrl, setImageUrl] = React.useState('data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=');
+  const [quote, setQuote] = React.useState('Loading...');
+  const [quoteAuthor, setQuoteAuthor] = React.useState('unknown');
+
+  // We only want this to render the first time the component is created and so we provide an empty dependency list.
+  React.useEffect(() => {
+    setImageUrl(`placeholder.webp`);
+  }, []);
+
   return (
     <main class="container-fluid bg-secondary text-center">
       <div>
@@ -19,7 +29,6 @@ export function About() {
         this website with other intensions. Avoid sharing any personal information, especially your name! 
         Dont share the names of others you may be talking about. Avoid naming places as well.
         </p>
-
       </div>
     </main>
   );
