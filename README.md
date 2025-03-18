@@ -1,4 +1,4 @@
-# startup
+# startup - PenPal
 
 ## Elevator pitch:
 
@@ -34,5 +34,37 @@ Service - Backend service with endpoints for:
  -sending messages 
 DB/Login - Store users, and messages in database. Register and login users. Credentials securely stored in database. 
 WebSocket - As each user text, their texts are broadcast to only the disired other user. 
+
+## Developing PenPal
+
+### step 1: AWS
+I followed the given instructions to set up my own domain. I was able to claim the domain PenPal.click. I will be using this 
+domain to develop my website
+
+### step 2: HTML
+After learning about HTML pages, I created some basic html pages to give my website a bit of scafolding to build off of. 
+I have a login page, a pals page for chatting, and an about page.
+
+### step 3: CSS
+After learning about the cascading style sheets, I created some CSS pages to match with each html page. I later created an index page 
+that has general rules that applied to all the html. 
+
+### step 4: React
+After learning javascript, I created jsx files for each of my web pages. These pages included the html. doing this gave my pages some 
+functionality. I was able to travel across pages without rerouting through the browser. Instead, all of the pages are already loaded 
+but now the buttons on the page allow the user to seemlessly navegate accross pages without reloading. I later added functionality 
+to my pals page to allow the user to send messages, start new chats and delete chats. I also created jsx files that allow for propper 
+login procedure. 
+
+### step 5: Service
+After learning about web services, I was able to reorganize my files to have a public folder for all of the front end code and a
+service folder that contains all of the backend code. This restricts the access of sensitive information such as backend code and 
+database access.It also made it that both backend and frontend code can work together on the same port. I am now also set up and 
+ready to connect my website to a database. 
+
+
+
+
+
 
 
