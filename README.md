@@ -51,3 +51,55 @@
 - [x] Deploy your startup application to your production environment (your server).
 - [x] Make sure your application is available from your production environment.
 - [x] Upload the URL to your startup application to the Canvas assignment.
+
+# Startup Service Deliverable
+
+- [x] Review and deploy Simon Service
+
+   1. Clone the Simon Service repository to your development environment.
+      ```
+      git clone https://github.com/webprogramming260/simon-service.git
+      ```
+   1. Run `npm install` in the root of the project.
+   1. Open the project in VS Code and examine the application's use of Node.js, Express, and JavaScript to create service endpoints.
+   1. Execute in your development environment by debugging the application using VS Code's Node.js debugger (press F5 while viewing `index.js`). Set breakpoints in VS Code and step through the backend JavaScript.
+   1. Start your frontend code using Vite by running `npm run dev`.
+   1. Open your browser to http://localhost:5173 and use the browser's dev tools to step through the frontend JavaScript using the Source tab.
+   1. Deploy to your production environment using the deployment script so that it is available with your domain's `simon` subdomain.
+
+- [x] Convert your startup application into a web service using Node.js and Express.
+
+   1. Create a service/index.js file for your backend
+   1. Add this code to service/index.js to allow your code to select a port to run on based on the command line parameters.
+      ```js
+      const port = process.argv.length > 2 ? process.argv[2] : 4000;
+      ```
+   1. Add this code to service/index.js to cause Express static middleware to serve files from the public directory once your code has been deployed to your AWS server.
+      ```js
+      app.use(express.static('public'));
+      ```
+   1. Add a vite.config.js file to your main startup directory (right above the service and src directories) with the following content (or copy it over from Simon). This will forward fetch requests that go to a path like "fetch('/api/scores')" to connect to your backend server running on port 4000.
+
+      ```js
+      import { defineConfig } from 'vite';
+
+      export default defineConfig({
+        server: {
+          proxy: {
+            '/api': 'http://localhost:4000',
+          },
+        },
+      });
+      ```
+
+- [x] Create new endpoints for your backend (service/index.js) that are similar to those created by Simon.
+- [x] Call your endpoints from your frontend code using fetch.
+- [x] Call third party endpoints from your frontend code using fetch. This can be as simple as displaying a quote like Simon does.
+- [x] Debug your application by running your backend using VS Code's Node debugger on the service/index.js file and the browser's inspect dev tools to verify it is working correctly. You will have to run "npm run dev" to get your front end running.
+- [x] Periodically commit and push your code to GitHub.
+- [x] Periodically update your startup repository's notes.md file to reflect what you have learned and want to remember.
+- [x] Push your final version of your project to GitHub.
+- [x] Copy "deployService.sh" over from your Simon Service source code. You won't be able to use the deploy scripts from previous projects.
+- [x] Deploy your startup application to your production environment (your server) using "deployService.sh".
+- [x] Make sure your application is available from your production environment.
+- [x] Upload the URL to your startup application to the Canvas assignment.
