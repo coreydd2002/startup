@@ -1,0 +1,18 @@
+[
+  {
+    "email": "borey",
+    "password": "$2b$10$rk9aTPOWZ94OQhAxlBhLWeeFGmklPSIyINoqMadJqC0yc8R2/dECi",
+    "messages": []
+  },
+  {
+    "email": "morey",
+    "password": "$2b$10$xoWi1OFxny8tcwI6ugRR..TS9Ltnuozo9afLREcBAxF3UrC2R1weu",
+    "messages": []
+  },
+  {
+    "email": "user1",
+    "password": "$2b$10$wPQI6wUQufwCwvTrNn1C/eF/RgjgrfUgTd9qowJRjsCvE/KL/e3am",
+    "token": "3d372ca2-37c7-4f5a-9c46-07e00beae04c",
+    "messages": {}
+  }
+]
