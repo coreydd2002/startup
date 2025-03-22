@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const uuid = require('uuid');
 const app = express();
+const DB = require('./database.js');
 
 const authCookieName = 'token';
 
@@ -27,17 +28,32 @@ apiRouter.post('/auth/create', async (req, res) => {
     res.status(409).send({ msg: 'Existing user' });
   } else {
     const user = await createUser(req.body.email, req.body.password);
+
     setAuthCookie(res, user.token);
     res.send({ email: user.email });
   }
 });
 
-// Log in an existing user
+
+// CreateAuth token for a new user
+apiRouter.post('/auth/create', async (req, res) => {
+  if (await findUser('email', req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await createUser(req.body.email, req.body.password);
+
+    setAuthCookie(res, user.token);
+    res.send({ email: user.email });
+  }
+});
+
+// GetAuth token for the provided credentials
 apiRouter.post('/auth/login', async (req, res) => {
   const user = await findUser('email', req.body.email);
   if (user) {
     if (await bcrypt.compare(req.body.password, user.password)) {
       user.token = uuid.v4();
+      await DB.updateUser(user);
       setAuthCookie(res, user.token);
       res.send({ email: user.email });
       return;
@@ -46,17 +62,18 @@ apiRouter.post('/auth/login', async (req, res) => {
   res.status(401).send({ msg: 'Unauthorized' });
 });
 
-// Log out a user
+// DeleteAuth token if stored in cookie
 apiRouter.delete('/auth/logout', async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
   if (user) {
     delete user.token;
+    DB.updateUser(user);
   }
   res.clearCookie(authCookieName);
   res.status(204).end();
 });
 
-// Middleware to verify authentication
+// Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
   const user = await findUser('token', req.cookies[authCookieName]);
   if (user) {
@@ -84,14 +101,18 @@ async function createUser(email, password) {
     password: passwordHash,
     token: uuid.v4(),
   };
-  users.push(user);
+  await DB.addUser(user);
   return user;
 }
 
 // Find a user by field and value
 async function findUser(field, value) {
   if (!value) return null;
-  return users.find((u) => u[field] === value);
+
+  if (field === 'token') {
+    return DB.getUserByToken(value);
+  }
+  return DB.getUser(value);
 }
 
 // Set authentication cookie
@@ -103,8 +124,7 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-// Start the server
-app.listen(port, () => {
+const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
