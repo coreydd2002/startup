@@ -11,43 +11,46 @@ export function Play() {
 
   // Function to send a new message
   const sendMessage = async () => {
-    if (messageInput.trim() === "") return;
-
-    // Check if the current chat is ready (both users assigned)
-    const response = await fetch(`//messages?user1=user1&user2=${currentPal}`);
-    if (response.ok) {
-      const chat = await response.json();
-      if (!chat.user2) {
-        alert("Waiting for another user to join the chat.");
+    if (messageInput.trim() === "") return; // Prevent sending empty messages
+  
+    try {
+      const loggedInUser = localStorage.getItem('userName'); // Retrieve the logged-in user's email
+      const chatId = messages[currentPal]?._id; // Get the chat ID of the current pal
+  
+      if (!chatId) {
+        console.error("Chat ID not found for current pal");
         return;
       }
-    } else {
-      console.error("Failed to fetch chat details");
-      return;
-    }
-
-    const message = { text: messageInput, sender: "user1", timestamp: new Date() };
-
-    const sendResponse = await fetch(`/api/messages/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user1: "user1", // Replace with the logged-in user's email
-        user2: currentPal, // Assume `currentPal` holds recipient email
-        message,
-      }),
-    });
-
-    if (sendResponse.ok) {
-      setMessages((prev) => ({
-        ...prev,
-        [currentPal]: [...(prev[currentPal] || []), message],
-      }));
-      setMessageInput("");
-    } else {
-      console.error("Failed to send message");
+  
+      // Send the message to the backend
+      const response = await fetch('/api/messages/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatId,
+          sender: loggedInUser,
+          text: messageInput,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Message sent:", data.message); // Debugging log
+  
+        // Update the messages state with the new message
+        const newMessages = { ...messages };
+        newMessages[currentPal].messages.push(data.message);
+        setMessages(newMessages);
+  
+        // Clear the input field
+        setMessageInput("");
+      } else {
+        console.error("Failed to send message:", response.statusText);
+      }
+    } catch (err) {
+      console.error("Error in sendMessage:", err);
     }
   };
 
@@ -75,15 +78,22 @@ export function Play() {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const response = await fetch(`/api/messages?user1=user1&user2=${currentPal}`);
-      if (response.ok) {
-        const data = await response.json();
-        setMessages((prev) => ({ ...prev, [currentPal]: data }));
-      } else {
-        console.error("Failed to fetch messages");
+      try {
+        const response = await fetch(`/api/messages?user1=user1&user2=${currentPal}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMessages((prev) => ({ ...prev, [currentPal]: data.messages }));
+          setPals((prevPals) =>
+            prevPals.map((pal) => (pal === "Searching for a new pal..." ? data.chatName : pal))
+          ); // Update the chat name in the pals list
+        } else {
+          console.error("Failed to fetch messages");
+        }
+      } catch (err) {
+        console.error("Error fetching messages:", err);
       }
     };
-
+  
     if (currentPal) {
       fetchMessages();
     }
@@ -182,7 +192,7 @@ export function Play() {
             placeholder="Type your message..."
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()} // Allow pressing Enter to send
           />
           <button id="sendButton" onClick={sendMessage}>Send</button>
         </div>
