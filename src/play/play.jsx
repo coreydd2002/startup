@@ -54,9 +54,13 @@ export function Play() {
   useEffect(() => {
     const fetchPals = async () => {
       try {
-        const response = await fetch('/api/messages'); // Fetch all messages from the backend
+        const loggedInUser = localStorage.getItem('userName'); // Retrieve the logged-in user's email
+        console.log("Fetching pals for user:", loggedInUser); // Debugging log
+  
+        const response = await fetch(`/api/messages?user=${loggedInUser}`); // Pass the user's email as a query parameter
         if (response.ok) {
           const data = await response.json();
+          console.log("Filtered pals:", data); // Debugging log
           setPals(data.map((chat) => chat.chatName)); // Populate pals with chat names
         } else {
           console.error("Failed to fetch pals");
@@ -132,6 +136,7 @@ export function Play() {
 
   return (
     <main className="bg-secondary">
+
       {/* Pals List */}
       <div className="pals">
         <span className="pal-list">Your Pals</span>
@@ -151,6 +156,8 @@ export function Play() {
           )}
         </div>
       </div>
+
+
   
       {/* Chat Section */}
       <div className="chat-container">
@@ -177,6 +184,8 @@ export function Play() {
           <button id="sendButton" onClick={sendMessage}>Send</button>
         </div>
       </div>
+
+
   
       {/* Options Section */}
       <div className="options-container">
