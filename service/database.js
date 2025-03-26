@@ -10,8 +10,8 @@ const messageCollection = db.collection('messages');
 
 
 function generateChatName() {
-  const colors = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Gray', 'Black', 'White'];
-  const animals = ['Tiger', 'Owl', 'Eagle', 'Lion', 'Bear', 'Wolf', 'Fox', 'Hawk', 'Panther'];
+  const colors = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Gray', 'Black', 'White', 'Pink', 'Brown', 'Gold'];
+  const animals = ['Tiger', 'Owl', 'Eagle', 'Lion', 'Bear', 'Wolf', 'Fox', 'Hawk', 'Panther', 'Raven', 'Deer', 'Coyote'];
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
   const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
   return `${randomColor} ${randomAnimal}`;
@@ -48,17 +48,6 @@ async function updateUser(user) {
   );
 }
 
-
-// Function to fetch all message collections
-async function getAllMessages() {
-  try {
-    const messages = await messageCollection.find().toArray();
-    return messages;
-  } catch (err) {
-    console.error("Error in getAllMessages:", err);
-    throw err;
-  }
-}
 
 // Function to find an open-ended message (no user2 assigned)
 async function findOpenMessage() {
@@ -133,6 +122,20 @@ async function getMessage(user1, user2) {
 }
 
 
+async function getMessagesByUser(userEmail) {
+  try {
+    const messages = await messageCollection.find({
+      $or: [{ user1: userEmail }, { user2: userEmail }]
+    }).toArray();
+    console.log("Filtered messages for user:", userEmail, messages); // Debugging log
+    return messages;
+  } catch (err) {
+    console.error("Error in getMessagesByUser:", err);
+    throw err;
+  }
+}
+
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -143,5 +146,5 @@ module.exports = {
   findOpenMessage,
   createMessage,
   assignUserToMessage,
-  getAllMessages,
+  getMessagesByUser,
 };
