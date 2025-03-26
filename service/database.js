@@ -135,6 +135,25 @@ async function getMessagesByUser(userEmail) {
   }
 }
 
+async function getChatByUser(userEmail) {
+  try {
+    return await messageCollection.findOne({
+      $or: [{ user1: userEmail }, { user2: userEmail }],
+    });
+  } catch (err) {
+    console.error("Error in getChatByUser:", err);
+    throw err;
+  }
+}
+
+async function findOpenMessage() {
+  try {
+    return await messageCollection.findOne({ user2: null });
+  } catch (err) {
+    console.error("Error in findOpenMessage:", err);
+    throw err;
+  }
+}
 
 module.exports = {
   getUser,
@@ -147,4 +166,6 @@ module.exports = {
   createMessage,
   assignUserToMessage,
   getMessagesByUser,
+  getChatByUser,
+  findOpenMessage,
 };
