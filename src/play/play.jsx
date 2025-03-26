@@ -113,6 +113,9 @@ export function Play() {
   
         // Optionally, set the new chat as the current pal
         setCurrentPal(newPalName);
+      } else if (response.status === 400) {
+        const data = await response.json();
+        alert(data.msg); // Show the error message from the backend
       } else {
         console.error("Failed to create or join chat:", response.statusText);
       }
