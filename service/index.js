@@ -92,8 +92,16 @@ apiRouter.post('/messages/createOrJoin', async (req, res) => {
 
 // Endpoint to fetch all message collections
 apiRouter.get('/messages', async (req, res) => {
+  const userEmail = req.query.user; // Get the logged-in user's email from the query parameter
+  console.log("Fetching messages for user:", userEmail); // Debugging log
+
   try {
-    const messages = await DB.getAllMessages(); // Fetch all messages from the database
+    if (!userEmail) {
+      return res.status(400).send({ msg: 'User email is required' }); // Handle missing email
+    }
+
+    // Fetch messages where the user is either user1 or user2
+    const messages = await DB.getMessagesByUser(userEmail);
     res.status(200).send(messages);
   } catch (err) {
     console.error("Error fetching messages:", err);
