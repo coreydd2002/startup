@@ -75,11 +75,11 @@ apiRouter.post('/messages/createOrJoin', async (req, res) => {
     // Check for an open-ended message collection (user2 is null)
     if (openMessage) {
       // Assign the current user to user2 in the open message
-      await DB.assignUserToMessage(openMessage._id, user);
+      const chatName = await DB.assignUserToMessage(openMessage._id, user); // Ensure this returns the updated chat name
       res.status(200).send({
         msg: 'Joined existing chat',
         chatId: openMessage._id,
-        chatName: openMessage.chatName,
+        chatName, // Return the updated chat name
         user2: user,
       });
     } else {
@@ -95,6 +95,26 @@ apiRouter.post('/messages/createOrJoin', async (req, res) => {
   } catch (err) {
     console.error("Error in createOrJoin endpoint:", err);
     res.status(500).send({ msg: 'Failed to create or join chat' });
+  }
+});
+
+apiRouter.post('/messages/send', async (req, res) => {
+  const { chatId, sender, text } = req.body; // Get the chat ID, sender, and message text from the request body
+
+  try {
+    // Add the message to the chat's messages array
+    const timestamp = new Date();
+    const message = { sender, text, timestamp };
+
+    const result = await DB.addMessageToChat(chatId, message);
+    if (result.modifiedCount === 0) {
+      return res.status(404).send({ msg: 'Chat not found' });
+    }
+
+    res.status(200).send({ msg: 'Message sent successfully', message });
+  } catch (err) {
+    console.error("Error sending message:", err);
+    res.status(500).send({ msg: 'Failed to send message' });
   }
 });
 
