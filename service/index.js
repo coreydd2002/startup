@@ -62,9 +62,17 @@ apiRouter.post('/messages/createOrJoin', async (req, res) => {
   const { user } = req.body; // Get the logged-in user's email from the request body
 
   try {
-    // Check for an open-ended message collection (user2 is null)
+    // Check if the user is already `user1` in an open-ended chat
     const openMessage = await DB.findOpenMessage();
+    if (openMessage && openMessage.user1 === user) {
+      return res.status(400).send({
+        msg: 'Hold your horses! You are already on the search for a new pal.',
+        chatId: openMessage._id,
+        chatName: openMessage.chatName,
+      });
+    }
 
+    // Check for an open-ended message collection (user2 is null)
     if (openMessage) {
       // Assign the current user to user2 in the open message
       await DB.assignUserToMessage(openMessage._id, user);
