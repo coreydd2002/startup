@@ -85,16 +85,12 @@ export function Play() {
     }
   }, [currentPal]);
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  };
-
   // Function to add a new numbered pal
   const addNewPal = async () => {
     try {
-      const loggedInUser = getCookie('email'); // Retrieve the logged-in user's email
+      const loggedInUser = localStorage.getItem('userName'); // Retrieve the logged-in user's email
+      console.log("Logged-in user:", loggedInUser); // Debugging log
+  
       const response = await fetch('/api/messages/createOrJoin', {
         method: 'POST',
         headers: {
@@ -105,16 +101,16 @@ export function Play() {
   
       if (response.ok) {
         const data = await response.json();
-        console.log("New chat created:", data); // Debugging log
+        console.log("Chat response:", data); // Debugging log
   
-        // Update the pals list with the new chat name
+        // Update the pals list with the new or joined chat
         const newPalName = data.chatName; // Use the chat name from the backend
         setPals((prevPals) => [...prevPals, newPalName]); // Add the new chat to the pals list
   
         // Optionally, set the new chat as the current pal
         setCurrentPal(newPalName);
       } else {
-        console.error("Failed to create new chat:", response.statusText);
+        console.error("Failed to create or join chat:", response.statusText);
       }
     } catch (err) {
       console.error("Error in addNewPal:", err);
