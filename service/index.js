@@ -60,20 +60,33 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 // Endpoint to create or join a chat
 apiRouter.post('/messages/createOrJoin', async (req, res) => {
   const { user } = req.body; // Get the logged-in user's email from the request body
-  try {
-    // Create a new message collection with the logged-in user as user1
-    const { id: newMessageId, chatName } = await DB.createMessage(user);
 
-    // Respond with the new chat details
-    res.status(201).send({
-      msg: 'Created new chat',
-      chatId: newMessageId,
-      chatName,
-      user2: null,
-    });
+  try {
+    // Check for an open-ended message collection (user2 is null)
+    const openMessage = await DB.findOpenMessage();
+
+    if (openMessage) {
+      // Assign the current user to user2 in the open message
+      await DB.assignUserToMessage(openMessage._id, user);
+      res.status(200).send({
+        msg: 'Joined existing chat',
+        chatId: openMessage._id,
+        chatName: openMessage.chatName,
+        user2: user,
+      });
+    } else {
+      // No open message found, create a new one
+      const { id: newMessageId, chatName } = await DB.createMessage(user);
+      res.status(201).send({
+        msg: 'Created new chat',
+        chatId: newMessageId,
+        chatName,
+        user2: null,
+      });
+    }
   } catch (err) {
     console.error("Error in createOrJoin endpoint:", err);
-    res.status(500).send({ msg: 'Failed to create new chat' });
+    res.status(500).send({ msg: 'Failed to create or join chat' });
   }
 });
 
@@ -120,6 +133,7 @@ async function findUser(field, value) {
   return DB.getUser(value);
 }
 
+
 // Set authentication cookie
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
@@ -128,6 +142,7 @@ function setAuthCookie(res, authToken) {
     sameSite: 'strict',
   });
 }
+
 
 const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
