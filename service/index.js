@@ -1,5 +1,5 @@
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('./node_modules/bcryptjs/umd/index.js');
 const express = require('express');
 const uuid = require('uuid');
 const app = express();
@@ -23,19 +23,6 @@ var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 // Create a new user
-apiRouter.post('/auth/create', async (req, res) => {
-  if (await findUser('email', req.body.email)) {
-    res.status(409).send({ msg: 'Existing user' });
-  } else {
-    const user = await createUser(req.body.email, req.body.password);
-
-    setAuthCookie(res, user.token);
-    res.send({ email: user.email });
-  }
-});
-
-
-// CreateAuth token for a new user
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
     res.status(409).send({ msg: 'Existing user' });
@@ -127,4 +114,3 @@ function setAuthCookie(res, authToken) {
 const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
