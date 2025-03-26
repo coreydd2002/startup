@@ -10,8 +10,18 @@ const messageCollection = db.collection('messages');
 
 
 function generateChatName() {
-  const colors = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Gray', 'Black', 'White', 'Pink', 'Brown', 'Gold'];
-  const animals = ['Tiger', 'Owl', 'Eagle', 'Lion', 'Bear', 'Wolf', 'Fox', 'Hawk', 'Panther', 'Raven', 'Deer', 'Coyote'];
+  const colors = ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Gray', 
+    'Black', 'White', 'Pink', 'Brown', 'Gold', 'Silver', 'Copper', 'cyan', 'Magenta', 
+    'Lime', 'Teal', 'Indigo', 'Violet', 'Amber', 'Azure', 'Beige', 'Coral', 'Crimson', 
+    'Lavender', 'Maroon', 'Olive', 'Plum', 'Salmon', 'Turquoise', 'mustard', 'Peach'];
+  const animals = ['Tiger', 'Owl', 'Eagle', 'Lion', 'Bear', 'Wolf', 'Fox', 'Hawk', 
+    'Panther', 'Raven', 'Deer', 'Coyote', 'Moose', 'Rabbit', 'Squirrel', 'Badger',
+    'Raccoon', 'Bobcat', 'Cougar', 'Jaguar', 'Leopard', 'Cheetah', 'Hyena',  'Wallaby',
+    'chicken', 'Duck', 'Goose', 'Turkey', 'Pheasant', 'Quail', 'Partridge', 'Peacock',
+    'Penguin', 'Ostrich', 'Emu', 'Kiwi', 'Cassowary', 'Rhea', 'Albatross', 'Pelican',
+    'Heron', 'Stork', 'Flamingo', 'Ibis', 'Spoonbill', 'Vulture', 'Egret', 'Condor',
+    'Horse', 'Cow', 'Pig', 'Sheep', 'Goat', 'Dog', 'Cat', 'Giraffe', 'panda', 'Koala', 
+    'Kangaroo', 'Wombat', 'Platypus'];
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
   const randomAnimal = animals[Math.floor(Math.random() * animals.length)];
   return `${randomColor} ${randomAnimal}`;
@@ -76,16 +86,16 @@ async function assignUserToMessage(messageId, user2) {
 async function createMessage(user1) {
   try {
     const customId = uuidv4(); // Generate a unique ID for the chat
-    const chatName = generateChatName(); // Generate a random chat name
+    const initialChatName = "Searching for a new pal..."; // Temporary chat name
     const result = await messageCollection.insertOne({
       _id: customId, // Use the custom ID
       user1,
       user2: null,
-      chatName, // Add the generated chat name
+      chatName: initialChatName, // Set the initial chat name
       messages: [], // Initialize with an empty messages array
     });
     console.log("New message created:", result); // Debugging log
-    return { id: result.insertedId, chatName };
+    return { id: result.insertedId, chatName: initialChatName };
   } catch (err) {
     console.error("Error in createMessage:", err);
     throw err;
@@ -95,10 +105,12 @@ async function createMessage(user1) {
 // Function to assign user2 to an open-ended message
 async function assignUserToMessage(messageId, user2) {
   try {
+    const chatName = generateChatName(); // Generate a random chat name
     await messageCollection.updateOne(
       { _id: messageId },
-      { $set: { user2 } }
+      { $set: { user2, chatName } } // Update user2 and chatName
     );
+    console.log(`User2 added and chat name updated to: ${chatName}`);
   } catch (err) {
     console.error("Error in assignUserToMessage:", err);
     throw err;
@@ -155,6 +167,18 @@ async function findOpenMessage() {
   }
 }
 
+async function addMessageToChat(chatId, message) {
+  try {
+    return await messageCollection.updateOne(
+      { _id: chatId },
+      { $push: { messages: message } } // Append the message to the messages array
+    );
+  } catch (err) {
+    console.error("Error in addMessageToChat:", err);
+    throw err;
+  }
+}
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -168,4 +192,5 @@ module.exports = {
   getMessagesByUser,
   getChatByUser,
   findOpenMessage,
+  addMessageToChat,
 };
