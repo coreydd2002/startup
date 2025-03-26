@@ -71,6 +71,18 @@ async function findOpenMessage() {
   }
 }
 
+async function assignUserToMessage(messageId, user2) {
+  try {
+    await messageCollection.updateOne(
+      { _id: messageId },
+      { $set: { user2 } }
+    );
+  } catch (err) {
+    console.error("Error in assignUserToMessage:", err);
+    throw err;
+  }
+}
+
 // Function to create a new message collection with user1 assigned
 async function createMessage(user1) {
   try {
@@ -78,7 +90,7 @@ async function createMessage(user1) {
     const chatName = generateChatName(); // Generate a random chat name
     const result = await messageCollection.insertOne({
       _id: customId, // Use the custom ID
-      user1, // Set the logged-in user's email as user1
+      user1,
       user2: null,
       chatName, // Add the generated chat name
       messages: [], // Initialize with an empty messages array
@@ -119,6 +131,7 @@ async function getMessage(user1, user2) {
   const chat = await messageCollection.findOne({ user1, user2 });
   return chat ? chat.messages : [];
 }
+
 
 module.exports = {
   getUser,
