@@ -2,79 +2,135 @@ import React, { useState, useEffect } from 'react';
 import './pals.css';
 
 export function Play() {
-  // Load pals from localStorage or use default pals
-  const [pals, setPals] = useState(() => {
-    return JSON.parse(localStorage.getItem("pals")) || ["Blue Tiger", "Red Eagle", "Navy Owl"];
-  });
+  const [pals, setPals] = useState([]); // Initialize pals as an empty array
+  const [currentPal, setCurrentPal] = useState(""); // No default pal
+  const [messages, setMessages] = useState({}); // Initialize messages as an empty object
+  const [messageInput, setMessageInput] = useState("");
 
-  const [currentPal, setCurrentPal] = useState(pals[0]); // Default to first pal
-  const [messages, setMessages] = useState(() => {
-    return JSON.parse(localStorage.getItem("chatMessages")) || {};
-  });
 
-  const [messageInput, setMessageInput] = useState(""); 
-
-  // Save pals and messages to localStorage
-  useEffect(() => {
-    localStorage.setItem("pals", JSON.stringify(pals));
-  }, [pals]);
-
-  useEffect(() => {
-    localStorage.setItem("chatMessages", JSON.stringify(messages));
-  }, [messages]);
 
   // Function to send a new message
   const sendMessage = async () => {
     if (messageInput.trim() === "") return;
-  
-    const response = await fetch(`/api/messages/send`, {
+
+    // Check if the current chat is ready (both users assigned)
+    const response = await fetch(`//messages?user1=user1&user2=${currentPal}`);
+    if (response.ok) {
+      const chat = await response.json();
+      if (!chat.user2) {
+        alert("Waiting for another user to join the chat.");
+        return;
+      }
+    } else {
+      console.error("Failed to fetch chat details");
+      return;
+    }
+
+    const message = { text: messageInput, sender: "user1", timestamp: new Date() };
+
+    const sendResponse = await fetch(`/api/messages/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        recipientEmail: currentPal, // Assume `currentPal` holds recipient email
-        message: messageInput,
+        user1: "user1", // Replace with the logged-in user's email
+        user2: currentPal, // Assume `currentPal` holds recipient email
+        message,
       }),
     });
-  
-    if (response.ok) {
+
+    if (sendResponse.ok) {
       setMessages((prev) => ({
         ...prev,
-        [currentPal]: [...(prev[currentPal] || []), { text: messageInput, sender: "user1" }],
+        [currentPal]: [...(prev[currentPal] || []), message],
       }));
       setMessageInput("");
     } else {
       console.error("Failed to send message");
     }
   };
+
+  useEffect(() => {
+    const fetchPals = async () => {
+      try {
+        const response = await fetch('/api/messages'); // Fetch all messages from the backend
+        if (response.ok) {
+          const data = await response.json();
+          setPals(data.map((chat) => chat.chatName)); // Populate pals with chat names
+        } else {
+          console.error("Failed to fetch pals");
+        }
+      } catch (err) {
+        console.error("Error fetching pals:", err);
+      }
+    };
   
+    fetchPals();
+  }, []);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const response = await fetch(`/api/messages?user1=user1&user2=${currentPal}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMessages((prev) => ({ ...prev, [currentPal]: data }));
+      } else {
+        console.error("Failed to fetch messages");
+      }
+    };
+
+    if (currentPal) {
+      fetchMessages();
+    }
+  }, [currentPal]);
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
 
   // Function to add a new numbered pal
-  const addNewPal = () => {
-    const newPalNumber = pals.filter(pal => pal.startsWith("New Chat")).length + 1;
-    const newPalName = `New Chat ${newPalNumber}`;
-
-    const updatedPals = [...pals, newPalName];
-    setPals(updatedPals);
-    setCurrentPal(newPalName); // Switch to new chat automatically
+  const addNewPal = async () => {
+    try {
+      const loggedInUser = getCookie('email'); // Retrieve the logged-in user's email
+      const response = await fetch('/api/messages/createOrJoin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: loggedInUser }), // Pass the logged-in user's email
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("New chat created:", data); // Debugging log
+  
+        // Update the pals list with the new chat name
+        const newPalName = data.chatName; // Use the chat name from the backend
+        setPals((prevPals) => [...prevPals, newPalName]); // Add the new chat to the pals list
+  
+        // Optionally, set the new chat as the current pal
+        setCurrentPal(newPalName);
+      } else {
+        console.error("Failed to create new chat:", response.statusText);
+      }
+    } catch (err) {
+      console.error("Error in addNewPal:", err);
+    }
   };
 
   // Function to delete the current pal
   const deleteChat = () => {
-    if (pals.length === 1) {
-      alert("You must have at least one chat open.");
-      return;
-    }
-
-    const updatedPals = pals.filter(pal => pal !== currentPal); // Remove current pal
+    const updatedPals = pals.filter((pal) => pal !== currentPal); // Remove current pal
     const newMessages = { ...messages };
     delete newMessages[currentPal];
 
     setPals(updatedPals);
     setMessages(newMessages);
 
-    // Switch to the first pal
+    // Switch to the first pal, or set to an empty string if no pals remain
     setCurrentPal(updatedPals[0] || "");
   };
 
@@ -83,25 +139,28 @@ export function Play() {
       {/* Pals List */}
       <div className="pals">
         <span className="pal-list">Your Pals</span>
-
         <div className="text-strings">
-          {pals.map((pal) => (
-            <button
-              key={pal}
-              onClick={() => setCurrentPal(pal)}
-              className={`pal-button ${currentPal === pal ? "active-pal" : ""}`}
-            >
-              {pal}
-            </button>
-          ))}
+          {pals.length === 0 ? (
+            <p className="no-pals-message">You have no current pals... let's change that!</p>
+          ) : (
+            pals.map((pal, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentPal(pal)}
+                className={`pal-button ${currentPal === pal ? "active-pal" : ""}`}
+              >
+                {pal}
+              </button>
+            ))
+          )}
         </div>
       </div>
-
+  
       {/* Chat Section */}
       <div className="chat-container">
         <div className="message-display" id="chat">
           <span className="current-pal">{currentPal}</span>
-
+  
           {/* Display messages for the selected pal */}
           {messages[currentPal]?.map((msg, index) => (
             <div key={index} className={`message ${msg.sender}`}>
@@ -109,7 +168,7 @@ export function Play() {
             </div>
           ))}
         </div>
-
+  
         <div className="input-area">
           <input
             type="text"
@@ -122,7 +181,7 @@ export function Play() {
           <button id="sendButton" onClick={sendMessage}>Send</button>
         </div>
       </div>
-
+  
       {/* Options Section */}
       <div className="options-container">
         <div>
@@ -137,4 +196,4 @@ export function Play() {
       </div>
     </main>
   );
-}
+};
