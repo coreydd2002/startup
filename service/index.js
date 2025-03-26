@@ -7,9 +7,6 @@ const DB = require('./database.js');
 
 const authCookieName = 'token';
 
-// The users are stored in memory and disappear when the service restarts.
-let users = [];
-
 // Service port configuration
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
 
@@ -60,15 +57,36 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
-// Middleware to verify that the user is authorized to call an endpoint
-const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    next();
-  } else {
-    res.status(401).send({ msg: 'Unauthorized' });
+// Endpoint to create or join a chat
+apiRouter.post('/messages/createOrJoin', async (req, res) => {
+  const { user } = req.body; // Get the logged-in user's email from the request body
+  try {
+    // Create a new message collection with the logged-in user as user1
+    const { id: newMessageId, chatName } = await DB.createMessage(user);
+
+    // Respond with the new chat details
+    res.status(201).send({
+      msg: 'Created new chat',
+      chatId: newMessageId,
+      chatName,
+      user2: null,
+    });
+  } catch (err) {
+    console.error("Error in createOrJoin endpoint:", err);
+    res.status(500).send({ msg: 'Failed to create new chat' });
   }
-};
+});
+
+// Endpoint to fetch all message collections
+apiRouter.get('/messages', async (req, res) => {
+  try {
+    const messages = await DB.getAllMessages(); // Fetch all messages from the database
+    res.status(200).send(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).send({ msg: 'Failed to fetch messages' });
+  }
+});
 
 // Default error handler
 app.use(function (err, req, res, next) {
