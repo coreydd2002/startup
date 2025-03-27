@@ -117,23 +117,6 @@ async function assignUserToMessage(messageId, user2) {
   }
 }
 
-
-// Function to add a message between two users
-async function addMessage(user1, user2, message) {
-  await messageCollection.updateOne(
-    { user1, user2 },
-    { $push: { messages: message } },
-    { upsert: true }
-  );
-}
-
-// Function to get messages between two users
-async function getMessage(user1, user2) {
-  const chat = await messageCollection.findOne({ user1, user2 });
-  return chat ? chat.messages : [];
-}
-
-
 async function getMessagesByUser(userEmail) {
   try {
     const messages = await messageCollection.find({
@@ -147,16 +130,6 @@ async function getMessagesByUser(userEmail) {
   }
 }
 
-async function getChatByUser(userEmail) {
-  try {
-    return await messageCollection.findOne({
-      $or: [{ user1: userEmail }, { user2: userEmail }],
-    });
-  } catch (err) {
-    console.error("Error in getChatByUser:", err);
-    throw err;
-  }
-}
 
 async function findOpenMessage() {
   try {
@@ -184,13 +157,10 @@ module.exports = {
   getUserByToken,
   addUser,
   updateUser,  
-  addMessage,
-  getMessage,
   findOpenMessage,
   createMessage,
   assignUserToMessage,
   getMessagesByUser,
-  getChatByUser,
   findOpenMessage,
   addMessageToChat,
 };
