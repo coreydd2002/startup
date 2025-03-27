@@ -1,12 +1,20 @@
 const express = require('express');
-const { addMessage, getMessages } = require('./database');
+const { addMessageToChat } = require('./database'); // Import addMessageToChat
 const router = express.Router();
 
 // Endpoint to send a message
 router.post('/api/messages/send', async (req, res) => {
-  const { user1, user2, message } = req.body;
+  const { chatId, sender, text } = req.body; // Use chatId, sender, and text
   try {
-    await addMessage(user1, user2, message);
+    const timestamp = new Date();
+    const message = { sender, text, timestamp };
+
+    // Use addMessageToChat to add the message to the chat
+    const result = await addMessageToChat(chatId, message);
+    if (result.modifiedCount === 0) {
+      return res.status(404).send("Chat not found");
+    }
+
     res.status(200).send("Message sent");
   } catch (err) {
     console.error(err);
@@ -15,7 +23,7 @@ router.post('/api/messages/send', async (req, res) => {
 });
 
 // Endpoint to get messages between two users
-apiRouter.get('/messages', async (req, res) => {
+router.get('/messages', async (req, res) => {
   const userEmail = req.query.user; // Get the logged-in user's email from the query parameter
 
   try {
