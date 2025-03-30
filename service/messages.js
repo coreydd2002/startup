@@ -20,19 +20,37 @@ router.post('/api/messages/send', async (req, res) => {
     console.error(err);
     res.status(500).send("Failed to send message");
   }
+  if (!chatId || !sender || !text) {
+    return res.status(400).send({ msg: "Missing required fields" });
+  }
 });
 
 // Endpoint to get messages between two users
-router.get('/messages', async (req, res) => {
-  const userEmail = req.query.user; // Get the logged-in user's email from the query parameter
-
+router.get('/api/messages/:chatId', async (req, res) => {
+  const { chatId } = req.params; // Get the chatId from the URL
   try {
-    // Fetch messages where the user is either user1 or user2
-    const messages = await DB.getMessagesByUser(userEmail);
-    res.status(200).send(messages);
+    const chat = await DB.getChatById(chatId); // Fetch the chat by chatId
+    if (!chat) {
+      return res.status(404).send({ msg: 'Chat not found' });
+    }
+    res.status(200).send(chat.messages); // Send only the messages array
   } catch (err) {
     console.error("Error fetching messages:", err);
     res.status(500).send({ msg: 'Failed to fetch messages' });
+  }
+});
+
+router.get('/api/chats/:chatName', async (req, res) => {
+  const { chatName } = req.params; // Get the chatName from the URL
+  try {
+    const chat = await messageCollection.findOne({ chatName }); // Query by chatName
+    if (!chat) {
+      return res.status(404).send({ msg: 'Chat not found' });
+    }
+    res.status(200).send(chat); // Send the entire chat object
+  } catch (err) {
+    console.error("Error fetching chat details:", err);
+    res.status(500).send({ msg: 'Failed to fetch chat details' });
   }
 });
 
