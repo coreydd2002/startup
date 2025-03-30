@@ -62,6 +62,17 @@ service folder that contains all of the backend code. This restricts the access 
 database access.It also made it that both backend and frontend code can work together on the same port. I am now also set up and 
 ready to connect my website to a database. 
 
+### step 6: Database
+After learning how to use Mongodb, I was able to connect my endpoints to a database. first, there are the login credentials that 
+get saved into the database. then I creased a different collection called messages, that created a new entitiy when ever a new 
+chat was created. This collection contained an ID, a chat name, a user 1, a user 2, and an array for messages. Whe a user goes to 
+create a new chat, the program first scans the database to try to find a chat that has a user 1 but no user 2. if the program 
+finds one, then the logged in user then gets attached to that message collection as user 2. if there is not open ended chat, then 
+a new collection is created with the loggged in user as user 1 and a null for user to (awaiting another user to join the chat). 
+Once the chat is complete with 2 users, a randomly generated chat name is given to the collection and that random name is what is 
+displayed ins tead of who you are actually chatting with to keep the connection ananymous. This all has worked so far, but I am 
+still encountering erros with the actual sending messages part. 
+
 
 
 
