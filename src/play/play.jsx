@@ -6,6 +6,7 @@ export function Play() {
   const [currentPal, setCurrentPal] = useState(""); // No default pal
   const [messages, setMessages] = useState({}); // Initialize messages as an empty object
   const [messageInput, setMessageInput] = useState("");
+  const [chat_id, setchatId] = useState("");// =========================
 
 
 
@@ -15,10 +16,9 @@ export function Play() {
   
     try {
       const loggedInUser = localStorage.getItem('userName'); // Retrieve the logged-in user's email
-      const chatId = messages[currentPal]?._id; // Get the chat ID of the current pal
   
-      if (!chatId) {
-        console.error("Chat ID not found for current pal");
+      if (!chat_id) {
+        console.error("Chat ID not found for the selected pal");
         return;
       }
   
@@ -29,7 +29,7 @@ export function Play() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chatId,
+          chatId: chat_id, // Use chat_id directly
           sender: loggedInUser,
           text: messageInput,
         }),
@@ -79,10 +79,15 @@ export function Play() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`/api/messages?user1=user1&user2=${currentPal}`);
+        if (!chat_id) {
+          console.error("Chat ID not found for the selected pal");
+          return;
+        }
+  
+        const response = await fetch(`/api/messages/${chat_id}`); // Use chat_id in the URL
         if (response.ok) {
           const data = await response.json();
-          setMessages((prev) => ({ ...prev, [currentPal]: data.messages }));
+          setMessages((prev) => ({ ...prev, [currentPal]: data.messages })); // Update messages state
           setPals((prevPals) =>
             prevPals.map((pal) => (pal === "Searching for a new pal..." ? data.chatName : pal))
           ); // Update the chat name in the pals list
@@ -94,10 +99,10 @@ export function Play() {
       }
     };
   
-    if (currentPal) {
+    if (chat_id) {
       fetchMessages();
     }
-  }, [currentPal]);
+  }, [chat_id]); // Trigger fetchMessages whenever chat_id changes
 
   // Function to add a new numbered pal
   const addNewPal = async () => {
@@ -160,7 +165,23 @@ export function Play() {
             pals.map((pal, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentPal(pal)}
+                onClick={async () => {
+                  setCurrentPal(pal); // Update the current pal's name
+            
+                  try {
+                    // Fetch chat details from the backend
+                    const response = await fetch(`/api/chats/${pal}`);
+                    if (response.ok) {
+                      const chat = await response.json();
+                      setchatId(chat._id); // Update the chat_id with the fetched _id
+                      setMessages((prev) => ({ ...prev, [pal]: chat.messages })); // Update messages for the selected pal
+                    } else {
+                      console.error("Failed to fetch chat details");
+                    }
+                  } catch (err) {
+                    console.error("Error fetching chat details:", err);
+                  }
+                }}
                 className={`pal-button ${currentPal === pal ? "active-pal" : ""}`}
               >
                 {pal}
@@ -169,7 +190,6 @@ export function Play() {
           )}
         </div>
       </div>
-
 
   
       {/* Chat Section */}
