@@ -14,6 +14,7 @@ function generateChatName() {
     'Black', 'White', 'Pink', 'Brown', 'Gold', 'Silver', 'Copper', 'cyan', 'Magenta', 
     'Lime', 'Teal', 'Indigo', 'Violet', 'Amber', 'Azure', 'Beige', 'Coral', 'Crimson', 
     'Lavender', 'Maroon', 'Olive', 'Plum', 'Salmon', 'Turquoise', 'mustard', 'Peach'];
+
   const animals = ['Tiger', 'Owl', 'Eagle', 'Lion', 'Bear', 'Wolf', 'Fox', 'Hawk', 
     'Panther', 'Raven', 'Deer', 'Coyote', 'Moose', 'Rabbit', 'Squirrel', 'Badger',
     'Raccoon', 'Bobcat', 'Cougar', 'Jaguar', 'Leopard', 'Cheetah', 'Hyena',  'Wallaby',
@@ -130,16 +131,6 @@ async function getMessagesByUser(userEmail) {
   }
 }
 
-
-async function findOpenMessage() {
-  try {
-    return await messageCollection.findOne({ user2: null });
-  } catch (err) {
-    console.error("Error in findOpenMessage:", err);
-    throw err;
-  }
-}
-
 async function addMessageToChat(chatId, message) {
   try {
     return await messageCollection.updateOne(
@@ -148,6 +139,15 @@ async function addMessageToChat(chatId, message) {
     );
   } catch (err) {
     console.error("Error in addMessageToChat:", err);
+    throw err;
+  }
+}
+
+async function getChatById(chatId) {
+  try {
+    return await messageCollection.findOne({ _id: chatId });
+  } catch (err) {
+    console.error("Error in getChatById:", err);
     throw err;
   }
 }
@@ -163,4 +163,5 @@ module.exports = {
   getMessagesByUser,
   findOpenMessage,
   addMessageToChat,
+  getChatById,
 };
