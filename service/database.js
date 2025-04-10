@@ -6,7 +6,7 @@ const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostna
 const client = new MongoClient(url);
 const db = client.db('penpal');
 const userCollection = db.collection('user');
-const messageCollection = db.collection('messages');
+const messageCollection = db.collection('chats');
 
 
 function generateChatName() {
@@ -71,25 +71,15 @@ async function findOpenMessage() {
   }
 }
 
-async function assignUserToMessage(messageId, user2) {
-  try {
-    await messageCollection.updateOne(
-      { _id: messageId },
-      { $set: { user2 } }
-    );
-  } catch (err) {
-    console.error("Error in assignUserToMessage:", err);
-    throw err;
-  }
-}
-
 // Function to create a new message collection with user1 assigned
 async function createMessage(user1) {
   try {
     const customId = uuidv4(); // Generate a unique ID for the chat
+    const custumToken = uuidv4(); // Generate a unique token for the chat
     const initialChatName = "Searching for a new pal..."; // Temporary chat name
     const result = await messageCollection.insertOne({
       _id: customId, // Use the custom ID
+      token: custumToken,
       user1,
       user2: null,
       chatName: initialChatName, // Set the initial chat name
@@ -118,7 +108,7 @@ async function assignUserToMessage(messageId, user2) {
   }
 }
 
-async function getMessagesByUser(userEmail) {
+async function getChatByUser(userEmail) {
   try {
     const messages = await messageCollection.find({
       $or: [{ user1: userEmail }, { user2: userEmail }]
@@ -130,6 +120,7 @@ async function getMessagesByUser(userEmail) {
     throw err;
   }
 }
+
 
 async function addMessageToChat(chatId, message) {
   try {
@@ -152,6 +143,27 @@ async function getChatById(chatId) {
   }
 }
 
+async function getChatByToken(token) {
+  try {
+    return await messageCollection.findOne({ token });
+  } catch (err) {
+    console.error("Error in getChatByToken:", err);
+    throw err;
+  }
+}
+
+async function updateChatUser(chatId, userField, newValue) {
+  try {
+    return await messageCollection.updateOne(
+      { _id: chatId },
+      { $set: { [userField]: newValue } } // Dynamically update the specified user field
+    );
+  } catch (err) {
+    console.error("Error in updateChatUser:", err);
+    throw err;
+  }
+}
+
 module.exports = {
   getUser,
   getUserByToken,
@@ -160,8 +172,10 @@ module.exports = {
   findOpenMessage,
   createMessage,
   assignUserToMessage,
-  getMessagesByUser,
+  getChatByUser,
   findOpenMessage,
   addMessageToChat,
   getChatById,
+  getChatByToken,
+  updateChatUser,
 };
