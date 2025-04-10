@@ -73,6 +73,12 @@ Once the chat is complete with 2 users, a randomly generated chat name is given 
 displayed ins tead of who you are actually chatting with to keep the connection ananymous. This all has worked so far, but I am 
 still encountering erros with the actual sending messages part. 
 
+### step 7: Websocket and debugging
+After many painful hours, i was able to get the chat feature in the database to work. now, when a message is sent, the message is
+into the database at a chat endpoint. after learning about websocket, I was able to incorporate it to update all users immediately 
+when a new message is sent. this allows for instantanious messaging between users. After going through and fixing these issues, i 
+then cleaned up the css of my site to make it more appealing to look at. the site is still not perfect, but I have been able to 
+demonstrate all the required technologies in the class up to this point!
 
 
 
